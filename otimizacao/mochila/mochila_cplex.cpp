@@ -61,10 +61,10 @@ int main(int argc, char *argv[]) {
 	cout << result << endl;
 
 	// mostra a solucao
+	cout << "#\tw\tv\t*" << endl;
 	for (int j = 0; j < n; j++){
-		cout << cplex.getValue(x[j]) << " ";
+		cout << j+1 << "\t" << w[j] << "\t" << v[j] << "\t" << cplex.getValue(x[j]) << endl;
 	}
-	cout << endl;
 
 	return 0;
 }
