@@ -1,6 +1,8 @@
 package xavier.ricardo.otimize;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 // https://dzone.com/articles/build-rest-web-service-using-spring
+
+// ricardoxavier.no-ip.org/OtimizeService/rest/executa?problema=mochila&instancia=mochila_5_10&implementacao=mochila_cplex
 
 @RestController
 @RequestMapping("/")
@@ -48,6 +52,27 @@ public class Controlador {
 		List<Implementacao> implementacoes = ImplementacaoDao.lista(problema);
 		for (Implementacao implementacao : implementacoes) {
 			resposta.getItens().add(implementacao.getNome());
+		}
+		return resposta;
+	}	
+
+	@RequestMapping(value = "/executa", method = RequestMethod.GET)
+	public RespostaOtimizacao executa(@RequestParam(value = "problema") String problema,
+			@RequestParam(value = "instancia") String instancia,
+			@RequestParam(value = "implementacao") String implementacao) {
+		RespostaOtimizacao resposta;
+		try {
+			Date t1 = new Date();
+			resposta = Executor.executa(problema, instancia, implementacao);
+			Date t2 = new Date();
+			resposta.setOk(true);
+			resposta.setTempo((int) (t2.getTime() - t1.getTime()));
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			resposta = new RespostaOtimizacao();
+			resposta.setOk(false);
+			resposta.setMensagem(e.getMessage());
 		}
 		return resposta;
 	}	
