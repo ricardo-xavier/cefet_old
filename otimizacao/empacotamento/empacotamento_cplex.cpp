@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
 	cout << result << endl;
 
 	// mostra a solucao
-	cout << "j\tn\tv\t*" << endl;
+	cout << "j\tn\tv\t-" << endl;
 	for (int j = 0; j < m; j++) {
 		int num_itens = 0;
 		int vol_itens = 0;
@@ -95,15 +95,15 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		if (num_itens > 0) {
-			cout << j+1 << "\t" << num_itens << "\t" << vol_itens << "\t" << cplex.getValue(y[j]) << endl;
+			cout << j+1 << "\t" << num_itens << "\t" << vol_itens << "\t" << " " << endl;
 		}
 	}
-	cout << endl;
-	cout << "i\ta\tj\t*" << endl;
+	cout << "\t\t\t\t" << endl;
+	cout << "i\ta\tj\t-" << endl;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			if (cplex.getValue(x[i][j]) > 0) {
-				cout << i+1 << "\t" << a[i] << "\t" << j+1 << "\t" << cplex.getValue(x[i][j]) << endl;
+				cout << i+1 << "\t" << a[i] << "\t" << j+1 << "\t" << " " << endl;
 			}
 		}
 	}
