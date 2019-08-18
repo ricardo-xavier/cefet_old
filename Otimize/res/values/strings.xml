@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Otimize</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="selecione_problema">Selecione um problema</string>
+    <string name="title_activity_instancia">Selecione uma instância</string>
+    <string name="title_activity_implementacoes">Selecione uma implementação</string>
+    <string name="title_activity_resultado">Resultado</string>
+    <string name="resultado">Resultado</string>
+    <string name="tempo">Tempo(ms)</string>
+    <string name="solucao">Solução</string>
+
+</resources>
