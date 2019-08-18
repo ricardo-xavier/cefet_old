@@ -11,5 +11,6 @@
     <string name="resultado">Resultado</string>
     <string name="tempo">Tempo(ms)</string>
     <string name="solucao">Solução</string>
+    <string name="title_activity_dados">Dados</string>
 
 </resources>

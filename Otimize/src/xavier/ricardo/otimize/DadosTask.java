@@ -17,15 +17,17 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 @SuppressWarnings("deprecation")
-public class InstanciasTask extends AsyncTask<String, Void, Instancias> {
+public class DadosTask extends AsyncTask<String, Void, RespostaListagem> {
 	
-	private InstanciasActivity contexto;
+	private DadosActivity contexto;
 	private String problema;
+	private String instancia;
 	private ProgressDialog progress;
 	
-	public InstanciasTask(InstanciasActivity contexto, String problema) {
+	public DadosTask(DadosActivity contexto, String problema, String instancia) {
 		this.contexto = contexto;
 		this.problema = problema;
+		this.instancia = instancia;
 	}
 	
 	@Override
@@ -37,10 +39,10 @@ public class InstanciasTask extends AsyncTask<String, Void, Instancias> {
 	}
 	
 	@Override
-	protected void onPostExecute(Instancias result) {
+	protected void onPostExecute(RespostaListagem result) {
 		super.onPostExecute(result);
 		progress.dismiss();
-		contexto.mostraResposta(result);
+		contexto.mostraDados(result);
 	}
 	
 	@Override
@@ -49,12 +51,13 @@ public class InstanciasTask extends AsyncTask<String, Void, Instancias> {
 	}
 
 	@Override
-	protected Instancias doInBackground(String... params) {
+	protected RespostaListagem doInBackground(String... params) {
 		
 		try {
 			
-			String url = "http://ricardoxavier.no-ip.org/OtimizeService/rest/instancias2"
-					+ "?problema=" + problema;
+			String url = "http://ricardoxavier.no-ip.org/OtimizeService/rest/dados"
+					+ "?problema=" + problema
+					+ "&instancia=" + instancia;
 			Log.i("OTIMIZE", url);
 			
 			HttpClient httpClient = new DefaultHttpClient();
@@ -74,7 +77,7 @@ public class InstanciasTask extends AsyncTask<String, Void, Instancias> {
 			Log.i("OTIMIZE", resultStr.toString());
 			
 			Gson gson = new Gson();
-			Instancias result = gson.fromJson(resultStr.toString(), Instancias.class);
+			RespostaListagem result = gson.fromJson(resultStr.toString(), RespostaListagem.class);
 			
 			return result;
 			

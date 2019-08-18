@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="xavier.ricardo.otimize"
-    android:versionCode="1"
-    android:versionName="1.0" android:installLocation="preferExternal">
+    android:installLocation="preferExternal"
+    android:versionCode="2"
+    android:versionName="1.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -27,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InstanciaActivity"
+            android:name=".InstanciasActivity"
             android:label="@string/title_activity_instancia"
             android:screenOrientation="portrait" >
         </activity>
@@ -39,6 +40,11 @@
         <activity
             android:name=".ResultadoActivity"
             android:label="@string/title_activity_resultado" >
+        </activity>
+        <activity
+            android:name=".DadosActivity"
+            android:label="@string/title_activity_dados"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

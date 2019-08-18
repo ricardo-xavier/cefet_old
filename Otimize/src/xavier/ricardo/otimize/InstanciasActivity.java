@@ -9,12 +9,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
+import android.widget.ListView;
 
 @SuppressWarnings("deprecation")
-public class InstanciaActivity extends ActionBarActivity {
+public class InstanciasActivity extends ActionBarActivity {
 	
 	private String problema;
 
@@ -29,13 +29,13 @@ public class InstanciaActivity extends ActionBarActivity {
 		
 	}
 
-	public void mostraResposta(RespostaListagem result) {
+	public void mostraResposta(Instancias result) {
 		if (result == null) {
 			return;
 		}
 		ListView lvInstancias = (ListView) findViewById(R.id.lvInstancias);
-		final List<String> instancias = result.getItens();
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, instancias);
+		final List<Instancia> instancias = result.getInstancias();
+		InstanciasAdapter adapter = new InstanciasAdapter(this, instancias);
 		lvInstancias.setAdapter(adapter);
 		
 		final Context contexto = this;
@@ -45,16 +45,28 @@ public class InstanciaActivity extends ActionBarActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				
-				String instancia = instancias.get(position);
-				Log.i("OTIMIZE", instancia);
+				Instancia instancia = instancias.get(position);
+				Log.i("OTIMIZE", instancia.getNome());
 				
 				Intent intent = new Intent(contexto, ImplementacoesActivity.class);
 				intent.putExtra("problema", problema);
-				intent.putExtra("instancia", instancia);
+				intent.putExtra("instancia", instancia.getNome());
 				startActivity(intent);
 				
 			}
 		});
+		
+	}
+	
+	public void dados(View v) {
+		ImageButton b = (ImageButton) v;
+		String instancia = (String) b.getTag();
+		Log.i("OTIMIZE", instancia);
+		
+		Intent intent = new Intent(this, DadosActivity.class);
+		intent.putExtra("problema", problema);
+		intent.putExtra("instancia", instancia);
+		startActivity(intent);
 		
 	}
 

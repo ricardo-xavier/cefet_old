@@ -45,7 +45,7 @@ public class MainActivity extends ActionBarActivity {
 				String problema = problemas.get(position);
 				Log.i("OTIMIZE", problema);
 				
-				Intent intent = new Intent(contexto, InstanciaActivity.class);
+				Intent intent = new Intent(contexto, InstanciasActivity.class);
 				intent.putExtra("problema", problema);
 				startActivity(intent);
 				
