@@ -1,6 +1,5 @@
 package xavier.ricardo.otimize;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -85,7 +84,7 @@ public class Controlador {
 			resposta.setOk(true);
 			resposta.setTempo((int) (t2.getTime() - t1.getTime()));
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			resposta = new RespostaOtimizacao();
 			resposta.setOk(false);
