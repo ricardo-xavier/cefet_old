@@ -5,6 +5,8 @@
 
 using namespace std;
 
+int ffd(int n, int V, vector<int> a);
+
 // empacotamento_cplex <datafile>
 int main(int argc, char *argv[]) {
 
@@ -16,7 +18,6 @@ int main(int argc, char *argv[]) {
 	int v; // capacidade do pacote
 	datafile >> n >> v;
 	// no pior caso cada item vai ser empacotado em um pacote diferente
-	int m = n; // numero de pacotes
 
 	vector<int> a(n); // tamanho dos itens
 	for (int i = 0; i < n; i++) {
@@ -24,6 +25,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	datafile.close();
+
+	int m = ffd(n, v, a); // numero de pacotes
 
 	// inicializa o cplex
 	IloEnv env;
@@ -53,9 +56,9 @@ int main(int argc, char *argv[]) {
 	for (int j = 0; j < m; j++) {
 		IloExpr r1(env);
 		for (int i = 0; i < n; i++) {
-			r1 += (a[i] * x[i][j]);
+			r1 += a[i] * x[i][j];
 		}
-		mod.add(r1 * y[j] <= v);
+		mod.add(r1 <= v * y[j]);
 		r1.end();
 	}
 
@@ -70,13 +73,17 @@ int main(int argc, char *argv[]) {
 	}
 
 	// um item só pode ser empacotado em um pacote alocado
+/*
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			mod.add(x[i][j] <= y[j]);
 		}
 	}
+*/
+
 
 	// resolve o problema
+	cplex.exportModel("model.lp");
 	cplex.solve();
 
 	// mostra o resultado
@@ -106,7 +113,32 @@ int main(int argc, char *argv[]) {
 				cout << i+1 << "\t" << a[i] << "\t" << j+1 << "\t" << " " << endl;
 			}
 		}
-	}
+ 	}
 
 	return 0;
+}
+
+int ffd(int n, int V, vector<int> a) {
+
+	vector<int> b(n); // indica em qual pacote o item foi empacotado
+	vector<int> v(n); // volume preenchido
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if ((v[j] + a[i]) <= V) {
+				b[i] = j;
+				v[j] += a[i];
+				break;
+			}	
+		}
+	}
+
+	// mostra o resultado
+	int m = 0;
+	for (int j = 0; j < n; j++) {
+		if (v[j] > 0) {
+			m++;
+		}
+	}
+	return m;
 }
