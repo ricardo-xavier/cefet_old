@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <ilcplex/ilocplex.h>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -23,6 +24,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < n; i++) {
 		datafile >> a[i];
 	}
+	//sort(a.begin(), a.end(), greater<int>());
 
 	datafile.close();
 
@@ -32,7 +34,7 @@ int main(int argc, char *argv[]) {
 	IloEnv env;
 	IloModel mod(env);
 	IloCplex cplex(mod);
-	cplex.setOut(env.getNullStream());
+	//cplex.setOut(env.getNullStream());
 
 	// variavel booleana indicando se um pacote foi usado
 	IloNumVarArray y(env, m, 0, 1, ILOBOOL);
@@ -133,7 +135,6 @@ int ffd(int n, int V, vector<int> a) {
 		}
 	}
 
-	// mostra o resultado
 	int m = 0;
 	for (int j = 0; j < n; j++) {
 		if (v[j] > 0) {
