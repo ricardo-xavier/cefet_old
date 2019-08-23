@@ -5,41 +5,7 @@
 
 using namespace std;
 
-int dominancia2(int n, vector<int> v, int V, vector<int> v2, vector<int> b2) {
-
-	int n2 = 0;
-	int b = 0;
-
-	for (int i=0, j=n-1; i<j; ) {
-		
-		int x = v[i] + v[j];
-
-		if (x == V) {
-			fprintf(stderr, "dominancia %d [%d] %d [%d]\n", i, v[i], j, v[j]);
-			i++;
-			j--;
-			b2.insert(b2.end(), b);
-			b2.insert(b2.end(), b++);
-			v2.insert(v2.end(), v[i]);
-			v2.insert(v2.end(), v[j]);
-			n2+=2;
-
-		} else if (x < V) {
-			j--;
-		} else {
-			i++;
-		}
-		
-	}
-
-	for (int i=0; i<n2; i+=2) {
-		fprintf(stderr, "i=%d %d\n", i, b2[i]);
-	}
-	for (int i=0; i<n2; i+=2) {
-		fprintf(stderr, "i=%d %d %d\n", i, v2[i], v2[i+1]);
-	}
-	return n2;
-}
+vector<int> dominancia2(int n, vector<int> v, int V, vector<int> &v2);
 
 // empacotamento_cplex <datafile>
 int main(int argc, char *argv[]) {
@@ -63,8 +29,8 @@ int main(int argc, char *argv[]) {
 	datafile.close();
 
 	vector<int> a2;
-	vector<int> b2;
-	dominancia2(n, a, V, a2, b2);
+	a = dominancia2(n, a, V, a2);
+    n = a.size();
 
 	// resolve o problema
 	vector<int> b(n); // indica em qual pacote o item foi empacotado
@@ -83,7 +49,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	// mostra o resultado
-	int result = 0;
+	int result = a2.size() / 2;
 	for (int j = 0; j < m; j++) {
 		if (q[j] > 0) {
 			result++;
@@ -93,14 +59,22 @@ int main(int argc, char *argv[]) {
 
 	// mostra a solucao
 	cout << "j\tn\tv\t-" << endl;
+    int k = a2.size() / 2;
+	for (int j = 0; j < k; j++) {
+		cout << j+1 << "\t" << 2 << "\t" << V << "\t" << " " << endl;
+	}
 	for (int j = 0; j < m; j++) {
 		if (q[j] > 0) {
-			cout << j+1 << "\t" << q[j] << "\t" << v[j] << "\t" << " " << endl;
+			cout << j+1+k << "\t" << q[j] << "\t" << v[j] << "\t" << " " << endl;
 		}
 	}
 	cout << "i\ta\tj\t-" << endl;
+	for (int i = 0; i < k; i++) {
+		cout << i*2+1 << "\t" << a2[i*2] << "\t" << i+1 << "\t" << " " << endl;
+		cout << i*2+2 << "\t" << a2[i*2+1] << "\t" << i+1 << "\t" << " " << endl;
+    }
 	for (int i = 0; i < n; i++) {
-		cout << i+1 << "\t" << a[i] << "\t" << b[i]+1 << "\t" << " " << endl;
+		cout << i+1+a2.size() << "\t" << a[i] << "\t" << b[i]+1+k << "\t" << " " << endl;
 	}
 
 	return 0;

@@ -7,6 +7,7 @@
 using namespace std;
 
 int ffd(int n, int V, vector<int> a);
+vector<int> dominancia2(int n, vector<int> v, int V, vector<int> &v2);
 
 // empacotamento_cplex <datafile>
 int main(int argc, char *argv[]) {
@@ -24,9 +25,13 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < n; i++) {
 		datafile >> a[i];
 	}
-	//sort(a.begin(), a.end(), greater<int>());
+	sort(a.begin(), a.end(), greater<int>());
 
 	datafile.close();
+
+	vector<int> a2;
+	a = dominancia2(n, a, v, a2);
+    n = a.size();
 
 	int m = ffd(n, v, a); // numero de pacotes
 
@@ -94,6 +99,10 @@ int main(int argc, char *argv[]) {
 
 	// mostra a solucao
 	cout << "j\tn\tv\t-" << endl;
+    int k = a2.size() / 2;
+	for (int j = 0; j < k; j++) {
+		cout << j+1 << "\t" << 2 << "\t" << v << "\t" << " " << endl;
+	}
 	for (int j = 0; j < m; j++) {
 		int num_itens = 0;
 		int vol_itens = 0;
@@ -104,15 +113,19 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		if (num_itens > 0) {
-			cout << j+1 << "\t" << num_itens << "\t" << vol_itens << "\t" << " " << endl;
+			cout << j+1+k << "\t" << num_itens << "\t" << vol_itens << "\t" << " " << endl;
 		}
 	}
 	cout << "\t\t\t\t" << endl;
 	cout << "i\ta\tj\t-" << endl;
+	for (int i = 0; i < k; i++) {
+		cout << i*2+1 << "\t" << a2[i*2] << "\t" << i+1 << "\t" << " " << endl;
+		cout << i*2+2 << "\t" << a2[i*2+1] << "\t" << i+1 << "\t" << " " << endl;
+    }
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			if (cplex.getValue(x[i][j]) > 0) {
-				cout << i+1 << "\t" << a[i] << "\t" << j+1 << "\t" << " " << endl;
+				cout << i+1+a2.size() << "\t" << a[i] << "\t" << j+1+k << "\t" << " " << endl;
 			}
 		}
  	}
