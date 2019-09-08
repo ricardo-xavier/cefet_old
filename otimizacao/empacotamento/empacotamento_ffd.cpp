@@ -7,7 +7,7 @@ using namespace std;
 
 vector<int> dominancia2(int n, vector<int> v, int V, vector<int> &v2);
 
-// empacotamento_cplex <datafile>
+// empacotamento_ffd <datafile>
 int main(int argc, char *argv[]) {
 
 	// load datafile

@@ -1,7 +1,7 @@
-CFLAGS=-g -Wall -Werror -m64
 CFLAGS=-g -w -m64
-ILOG=/cefet/opt/ibm/ILOG/CPLEX_Studio129/
+CFLAGS=-g -Wall -Werror -m64
 ILOG=/opt/ibm/ILOG/CPLEX_Studio129/
+ILOG=/cefet/opt/ibm/ILOG/CPLEX_Studio129/
 CC=g++
 
 CPLEX_INC=-DIL_STD -I$(ILOG)/cplex/include -I$(ILOG)/concert/include

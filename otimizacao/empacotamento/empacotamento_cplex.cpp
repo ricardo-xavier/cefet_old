@@ -4,6 +4,8 @@
 #include <ilcplex/ilocplex.h>
 #include <bits/stdc++.h>
 
+#define DOMINANCIA
+
 using namespace std;
 
 int ffd(int n, int V, vector<int> a);
@@ -29,8 +31,10 @@ int main(int argc, char *argv[]) {
 
 	datafile.close();
 
+#ifdef DOMINANCIA
 	vector<int> a2;
 	a = dominancia2(n, a, v, a2);
+#endif
     n = a.size();
 
 	int m = ffd(n, v, a); // numero de pacotes
@@ -88,18 +92,25 @@ int main(int argc, char *argv[]) {
 	}
 */
 
-
 	// resolve o problema
 	cplex.exportModel("model.lp");
 	cplex.solve();
 
 	// mostra o resultado
 	double result = cplex.getObjValue();
+#ifdef DOMINANCIA
+	cout << result + a2.size() / 2 << endl;
+#else
 	cout << result << endl;
+#endif
 
 	// mostra a solucao
 	cout << "j\tn\tv\t-" << endl;
+#ifdef DOMINANCIA
     int k = a2.size() / 2;
+#else
+    int k = 0;
+#endif
 	for (int j = 0; j < k; j++) {
 		cout << j+1 << "\t" << 2 << "\t" << v << "\t" << " " << endl;
 	}
@@ -118,14 +129,20 @@ int main(int argc, char *argv[]) {
 	}
 	cout << "\t\t\t\t" << endl;
 	cout << "i\ta\tj\t-" << endl;
+#ifdef DOMINANCIA
 	for (int i = 0; i < k; i++) {
 		cout << i*2+1 << "\t" << a2[i*2] << "\t" << i+1 << "\t" << " " << endl;
 		cout << i*2+2 << "\t" << a2[i*2+1] << "\t" << i+1 << "\t" << " " << endl;
     }
+#endif
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			if (cplex.getValue(x[i][j]) > 0) {
+#ifdef DOMINANCIA
 				cout << i+1+a2.size() << "\t" << a[i] << "\t" << j+1+k << "\t" << " " << endl;
+#else
+				cout << i+1 << "\t" << a[i] << "\t" << j+1+k << "\t" << " " << endl;
+#endif
 			}
 		}
  	}

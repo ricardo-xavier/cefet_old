@@ -5,8 +5,6 @@ using namespace std;
 
 vector<int> dominancia2(int n, vector<int> v, int V, vector<int> &v2) {
 
-	int b = 0;
-
 	for (int i=0, j=n-1; i<j; ) {
 		
 		int x = v[i] + v[j];
