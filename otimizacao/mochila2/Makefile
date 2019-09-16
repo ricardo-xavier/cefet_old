@@ -19,4 +19,4 @@ mochila2_cplex.o: mochila2_cplex.cpp
 	$(CC) $(CFLAGS) $(CPLEX_INC) -c mochila2_cplex.cpp
 
 run:
-	./mochila2_cplex mochila_5_10.txt
+	./mochila2_cplex mochila6.txt

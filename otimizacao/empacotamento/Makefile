@@ -28,4 +28,8 @@ dominancia2.o: utils/dominancia2.cpp
 	$(CC) $(CFLAGS) -c utils/dominancia2.cpp
 
 run: empacotamento_cplex empacotamento_ffd
-	./empacotamento_ffd empacotamento_6.txt
+	./empacotamento_cplex empacotamento_6_7.txt
+	./empacotamento_ffd empacotamento_6_7.txt
+	./empacotamento_cplex empacotamento_9_22.txt
+	./empacotamento_ffd empacotamento_9_22.txt
+

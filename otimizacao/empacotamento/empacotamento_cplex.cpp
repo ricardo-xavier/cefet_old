@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 	IloEnv env;
 	IloModel mod(env);
 	IloCplex cplex(mod);
-	//cplex.setOut(env.getNullStream());
+	cplex.setOut(env.getNullStream());
 
 	// variavel booleana indicando se um pacote foi usado
 	IloNumVarArray y(env, m, 0, 1, ILOBOOL);
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 */
 
 	// resolve o problema
-	cplex.exportModel("model.lp");
+	//cplex.exportModel("model.lp");
 	cplex.solve();
 
 	// mostra o resultado
