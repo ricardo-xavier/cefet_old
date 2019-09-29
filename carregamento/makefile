@@ -1,6 +1,6 @@
-CC = gcc -g
+CC = gcc -g -Wall -Werror
 
-OBJS = logbins.o list2.o instance.o
+OBJS = logbins.o list2.o instance.o utils.o
 
 all: logbins
 
@@ -14,4 +14,4 @@ logbins: $(OBJS)
 	$(CC) -c $<
 
 run:
-	./logbins
+	./logbins carregamento7.txt
