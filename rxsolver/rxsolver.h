@@ -5,18 +5,23 @@
 #define false 0
 #define true  1
 
-typedef enum rxsolver_enum {
-    SIMPLEX
+typedef enum {
+    RXSOLVER_SIMPLEX,
+    RXSOLVER_CUSTOM
 } rxsolver_methods ;
 
-void debug(int d);
-void maximize(char *expr, int n, int m);
-void subject_to(int i, char *expr, char *op, int b);
-float solve(rxsolver_methods method);
+static char *METHOD_NAMES[2] = { "SIMPLEX", "CUSTOM" };
+
+void rxsolver_debug(int d);
+bool rxsolver_objective(char *expr, int n, int m);
+bool rxsolver_subject_to(int i, char *expr);
+float rxsolver_solve(rxsolver_methods method);
+void rxsolver_show_result();
+void rxsolver_free();
 
 float simplex(int n, int m, float *c, char **x, int **A, int *b);
 
-void split_objective(char *expr, float *c, char **x);
-void split_constraint(char *expr, int *a, int n, char **x);
+bool split_objective(char *expr, float *c, char **x);
+bool split_constraint(int i, char *expr, int *a, int *b, char **x);
 
 #endif

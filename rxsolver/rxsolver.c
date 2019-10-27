@@ -3,22 +3,23 @@
 #include "rxsolver.h"
 
 int  n, m;
-float *c;
+float *c, z;
 char **x;
 int  **A;
 int  *b;
 
 int dbg=0;
 
-void debug(int d) {
+void rxsolver_debug(int d) {
     dbg = d;
 }
 
-void maximize(char *expr, int _n, int _m) {
+bool rxsolver_objective(char *expr, int _n, int _m) {
 
     if (dbg > 0) {
-        fprintf(stderr, "rxsolver: maximize: %s\n", expr);
+        fprintf(stderr, "rxsolver: : %s\n", expr);
     }
+
     n = _n;
     m = _m;
 
@@ -31,55 +32,68 @@ void maximize(char *expr, int _n, int _m) {
     }
     b = malloc(m * sizeof(int *));
 
-    split_objective(expr, c, x);
+    if (!split_objective(expr, c, x)) {
+        return false;
+    }
 
     if (dbg > 0) {
         for (int i=0; i<n; i++) {
-            fprintf(stderr, "%d %d%s\n", i, (int) c[i], x[i]);
+            fprintf(stderr, "    c[%d]x[%d] = %d%s\n", i+1, i+1, (int) c[i], x[i]);
         }
     }
 }
 
-void subject_to(int i, char *expr, char *op, int _b) {
+bool rxsolver_subject_to(int i, char *expr) {
 
     if (dbg > 0) {
         fprintf(stderr, "rxsolver: subject_to: %s\n", expr);
     }
 
-    split_constraint(expr, A[i], n, x);
+    if (!split_constraint(i, expr, A[i], b, x)) {
+        return false;
+    }
     
     if (dbg > 0) {
         for (int j=0; j<n; j++) {
-            fprintf(stderr, "%d%s ", A[i][j], x[j]);
+            fprintf(stderr, "    A[%d][%d] = %d%s\n", i+1, j+1, A[i][j], x[j]);
         }
     }
 
-    b[i] = _b;
     if (dbg > 0) {
-        fprintf(stderr, " %s %d\n", op, b[i]);
+        fprintf(stderr, "    b[%d] = %d\n", i+1, b[i]);
     }
 }
 
-float solve(rxsolver_methods method) {
-
-    float z=0;
+float rxsolver_solve(rxsolver_methods method) {
 
     if (dbg > 0) {
-        fprintf(stderr, "rxsolver: solve: %d\n", method);
+        fprintf(stderr, "rxsolver: solve: %s\n", METHOD_NAMES[method]);
     }
 
     switch (method) {
 
-        case SIMPLEX:
+        case RXSOLVER_SIMPLEX:
             z = simplex(n, m, c, x, A, b);
             break;
     }
 
-    if (dbg > 0) {
-        fprintf(stderr, "z=%.2f\n", z);
-        for (int i=0; i<n; i++) {
-            fprintf(stderr, "%.2f %s ", c[i], x[i]);
-        }
-        fprintf(stderr, "\n");
+    return z;
+}
+
+void rxsolver_show_result() {
+    fprintf(stderr, "z=%.2f\n", z);
+    for (int i=0; i<n; i++) {
+        fprintf(stderr, "%.2f %s ", c[i], x[i]);
     }
+    fprintf(stderr, "\n");
+}
+
+void rxsolver_free() {
+    for (int i=0; i<m; i++) {
+        free(A[i]);
+    }
+    free(c);
+    free(x);
+    free(A);
+    free(b);
 }

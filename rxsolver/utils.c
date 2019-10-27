@@ -4,66 +4,136 @@
 #include <string.h>
 #include "rxsolver.h"
 
-void split_objective(char *expr, float *c, char **x) {
+char **argv;
+int argc;
 
-    int i;
-    char *p, *q, aux[257];
+void split(char *expr) {
 
-    for (i=0, p=expr; *p; i++, p++) {
+    char *p, *q;;
+    int a;
 
-        for (q=p; isdigit(*q) || (*q == '+') || (*q == '-'); q++);
-        if (q == p) {
-            c[i] = 1;
-        } else {
-            memcpy(aux, p, q-p);
-            aux[q-p] = 0;
-            c[i] = atof(aux);
+    argc = 1;
+    for (p=expr; *p; p++) {
+        if (*p == ' ') {
+            while (*p == ' ') p++;
+            p--;
+            argc++;
         }
+    }
 
-        p = q;
-        for (; *q && (*q != ' '); q++);
-        x[i] = malloc(q-p+1);
-        memcpy(x[i], p, q-p);
-        x[i][q-p] = 0;
-
+    argv = malloc(argc * sizeof(char *));
+    a = 0;
+    for (p=expr;;) {
+        if ((q = strchr(p, ' ')) == NULL) {
+            q = p + strlen(p);
+        }
+        argv[a] = malloc(q-p+1);
+        memcpy(argv[a], p, q-p);
+        argv[a][q-p] = 0;
         if (!*q) {
             break;
         }
-
+        while (*q && (*q == ' ')) q++;
+        a++;
         p = q;
     }
 }
 
-void split_constraint(char *expr, int *a, int n, char **x) {
+bool split_objective(char *expr, float *c, char **x) {
 
-    int i, j, c;
-    char *p, *q, aux[257];
+    char s, *p, aux[9];
+    int i;
 
-    for (i=0, p=expr; *p; i++, p++) {
+    split(expr);
 
-        for (q=p; isdigit(*q) || (*q == '+') || (*q == '-'); q++);
-        if (q == p) {
-            c = 1;
-        } else {
-            memcpy(aux, p, q-p);
-            aux[q-p] = 0;
-            c = atoi(aux);
+    if (!strcmp(argv[0], "min") && !strcmp(argv[0], "max")) {
+        fprintf(stderr, "expected min|max\n");
+        return false;
+    }
+
+    s = '+';
+    i = 0;
+    for (int a=1; a<argc; a++) {
+
+        if (!strcmp(argv[a], "+") || !strcmp(argv[a], "-")) {
+            s = argv[a][0];
+            continue;
         }
 
-        p = q;
-        for (; *q && (*q != ' '); q++);
-
-        for (j=0; j<n; j++) {
-            if (!memcmp(x[j], p, q-p)) {
-                a[j] = c;
-                break;
+        for (p=argv[a]; *p; p++) {
+            if (!isdigit(*p) && (*p != '.')) {
+                if (p == argv[a]) {
+                    c[i] = 1.0f;
+                    x[i] = strdup(argv[a]);
+                } else {
+                    memcpy(aux, argv[a], p-argv[a]);
+                    aux[p-argv[a]] = 0;
+                    c[i] = atof(aux);
+                    x[i] = strdup(p);
+                }
+                if (s == '-') {
+                    c[i] *= -1;
+                }
+                i++;
             }
         }
+    }
 
-        if (!*q) {
+    for (int a=0; a<argc; a++) {
+        free(argv[a]);
+    }
+    free(argv);
+    return true;
+}
+
+bool split_constraint(int i, char *expr, int *_a, int *b, char **x) {
+
+    char s, *p, aux[9], *_x;
+    int _c;
+
+    split(expr);
+
+    s = '+';
+    for (int a=0; a<argc; a++) {
+
+        if (!strcmp(argv[a], "+") || !strcmp(argv[a], "-")) {
+            s = argv[a][0];
+            continue;
+        }
+
+        if ((argv[a][0] == '>') || (argv[a][0] == '<') || (argv[a][0] == '=')) {
+            b[i] = atoi(argv[++a]);
             break;
         }
 
-        p = q;
+        for (p=argv[a]; *p; p++) {
+            if (!isdigit(*p) && (*p != '.')) {
+                if (p == argv[a]) {
+                    _c = 1;
+                    _x = argv[a];
+                } else {
+                    memcpy(aux, argv[a], p-argv[a]);
+                    aux[p-argv[a]] = 0;
+                    _c = atoi(aux);
+                    _x = p;
+                }
+                if (s == '-') {
+                    _c *= -1;
+                }
+
+                for (int j=0; ; j++) {
+                    if (!strcmp(x[j], _x)) {
+                        _a[j] = _c;
+                        break;
+                    }
+                }
+            }
+        }
     }
+
+    for (int a=0; a<argc; a++) {
+        free(argv[a]);
+    }
+    free(argv);
+    return true;
 }
